@@ -7,9 +7,8 @@
 #include <algorithm>
 #include <string>
 
-// --- Observer Interfaces ---
-
-// Temperature observer now receives both °C and °F
+// Observers
+// Temperature observer receives both Celsius and Farenheit
 class TemperatureObserver {
 public:
     virtual void onTemperatureChange(float celsius, float fahrenheit) = 0;
@@ -23,7 +22,7 @@ public:
     virtual ~ConditionObserver() = default;
 };
 
-// --- Subject (Observable) ---
+// Observed Structure
 class WeatherStation {
 private:
     float temperatureC{};
@@ -33,7 +32,7 @@ private:
     std::vector<ConditionObserver*> condObservers;
 
 public:
-    // Observer management
+    // Observer management (Temperature)
     void addTemperatureObserver(TemperatureObserver* observer) {
         tempObservers.push_back(observer);
     }
@@ -41,6 +40,7 @@ public:
         tempObservers.erase(std::remove(tempObservers.begin(), tempObservers.end(), observer), tempObservers.end());
     }
 
+    // Observer management (Conditions)
     void addConditionObserver(ConditionObserver* observer) {
         condObservers.push_back(observer);
     }
@@ -50,7 +50,7 @@ public:
 
     // Notify functions
     void notifyTemperatureObservers() {
-        float fahrenheit = (temperatureC * 9.0f / 5.0f) + 32.0f;
+        float fahrenheit = (temperatureC * 9.0f / 5.0f) + 32.0f; // changes Celsius to Farenheit 
         for (auto* obs : tempObservers) {
             obs->onTemperatureChange(temperatureC, fahrenheit);
         }
@@ -76,8 +76,7 @@ public:
     }
 };
 
-// --- Concrete Observers ---
-
+// Concrete Observers
 // Phone only shows temperature
 class PhoneDisplay : public TemperatureObserver {
 public:
@@ -99,6 +98,7 @@ public:
 };
 
 // Alert system only reacts to weather condition changes
+// gives ALERT when conditions are severe (heavy rain, snow and ice, or thunderstorms with hail)
 class AlertSystem : public ConditionObserver {
 public:
     void onConditionChange(const std::string& condition) override {
@@ -110,7 +110,7 @@ public:
     }
 };
 
-// --- Example usage ---
+// Main
 int main() {
     WeatherStation station;
 
