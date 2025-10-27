@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <string>
 
+using namespace std;
+
 // Observers
 // Temperature observer receives both Celsius and Farenheit
 class TemperatureObserver {
@@ -18,7 +20,7 @@ public:
 // Weather condition observer
 class ConditionObserver {
 public:
-    virtual void onConditionChange(const std::string& condition) = 0;
+    virtual void onConditionChange(const string& condition) = 0;
     virtual ~ConditionObserver() = default;
 };
 
@@ -26,10 +28,10 @@ public:
 class WeatherStation {
 private:
     float temperatureC{};
-    std::string condition = "clear";
+    string condition = "clear";
 
-    std::vector<TemperatureObserver*> tempObservers;
-    std::vector<ConditionObserver*> condObservers;
+    vector<TemperatureObserver*> tempObservers;
+    vector<ConditionObserver*> condObservers;
 
 public:
     // Observer management (Temperature)
@@ -37,7 +39,7 @@ public:
         tempObservers.push_back(observer);
     }
     void removeTemperatureObserver(TemperatureObserver* observer) {
-        tempObservers.erase(std::remove(tempObservers.begin(), tempObservers.end(), observer), tempObservers.end());
+        tempObservers.erase(remove(tempObservers.begin(), tempObservers.end(), observer), tempObservers.end());
     }
 
     // Observer management (Conditions)
@@ -45,7 +47,7 @@ public:
         condObservers.push_back(observer);
     }
     void removeConditionObserver(ConditionObserver* observer) {
-        condObservers.erase(std::remove(condObservers.begin(), condObservers.end(), observer), condObservers.end());
+        condObservers.erase(remove(condObservers.begin(), condObservers.end(), observer), condObservers.end());
     }
 
     // Notify functions
@@ -64,13 +66,13 @@ public:
 
     // State changes
     void setTemperature(float newTempC) {
-        std::cout << "\n[WeatherStation] New temperature: " << newTempC << "°C\n";
+        cout << "\n[WeatherStation] New temperature: " << newTempC << "°C" << endl;
         temperatureC = newTempC;
         notifyTemperatureObservers();
     }
 
-    void setCondition(const std::string& newCondition) {
-        std::cout << "\n[WeatherStation] Weather condition changed to: " << newCondition << "\n";
+    void setCondition(const string& newCondition) {
+        cout << "\n[WeatherStation] Weather condition changed to: " << newCondition << endl;
         condition = newCondition;
         notifyConditionObservers();
     }
@@ -81,7 +83,7 @@ public:
 class PhoneDisplay : public TemperatureObserver {
 public:
     void onTemperatureChange(float celsius, float fahrenheit) override {
-        std::cout << "[PhoneDisplay] Temp: " << celsius << "°C / " << fahrenheit << "°F\n";
+        cout << "[PhoneDisplay] Temp: " << celsius << "°C / " << fahrenheit << "°F" << endl;
     }
 };
 
@@ -89,11 +91,11 @@ public:
 class LaptopDisplay : public TemperatureObserver, public ConditionObserver {
 public:
     void onTemperatureChange(float celsius, float fahrenheit) override {
-        std::cout << "[LaptopDisplay] Temp: " << celsius << "°C / " << fahrenheit << "°F\n";
+        cout << "[LaptopDisplay] Temp: " << celsius << "°C / " << fahrenheit << "°F" << endl;
     }
 
-    void onConditionChange(const std::string& condition) override {
-        std::cout << "[LaptopDisplay] Condition updated: " << condition << "\n";
+    void onConditionChange(const string& condition) override {
+        cout << "[LaptopDisplay] Condition updated: " << condition << endl;
     }
 };
 
@@ -101,11 +103,11 @@ public:
 // gives ALERT when conditions are severe (heavy rain, snow and ice, or thunderstorms with hail)
 class AlertSystem : public ConditionObserver {
 public:
-    void onConditionChange(const std::string& condition) override {
+    void onConditionChange(const string& condition) override {
         if (condition == "Heavy Rain" || condition == "Snow and Ice" || condition == "Thuderstorms with Hail") {
-            std::cout << "[AlertSystem] ALERT: Severe weather detected (" << condition << ")\n";
+            cout << "[AlertSystem] ALERT: Severe weather detected (" << condition << ")" << endl;
         } else {
-            std::cout << "[AlertSystem] Conditions normal (" << condition << ").\n";
+            cout << "[AlertSystem] Conditions normal (" << condition << ")." << endl;
         }
     }
 };
